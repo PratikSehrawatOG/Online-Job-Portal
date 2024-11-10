@@ -1,0 +1,9 @@
+Define the Project Structure
+
+     **CODE**👇👇
+src/
+│
+├── model/       # Contains Java classes for Job, Applicant, Company, etc.
+├── dao/         # Contains DAO classes for database operations
+├── util/        # Contains utility classes like DBConnection
+└── Main.java    # Main class to run the application
