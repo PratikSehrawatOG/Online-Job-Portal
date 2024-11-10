@@ -1,0 +1,21 @@
+Create the MySQL Tables
+
+
+**CODE**👇👇
+
+-- Company table
+CREATE TABLE Company (
+    companyId INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255),
+    email VARCHAR(100) UNIQUE
+);
+
+-- Job table
+CREATE TABLE Job (
+    jobId INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    companyId INT,
+    FOREIGN KEY (companyId) REFERENCES Company(companyId)
+);
