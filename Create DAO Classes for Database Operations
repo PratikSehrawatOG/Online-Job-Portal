@@ -1,0 +1,153 @@
+Create DAO Classes for Database Operations
+
+
+**CODE**👇👇
+
+##Job.java (Model Class)##
+package model;
+
+public class Job {
+    private int jobId;
+    private String title;
+    private String description;
+    private int companyId;
+
+    public Job(String title, String description, int companyId) {
+        this.title = title;
+        this.description = description;
+        this.companyId = companyId;
+    }
+
+    // Getters and Setters
+    public int getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
+}
+
+##JobDAO.java (DAO Class for Job Entity)##
+package dao;
+
+import model.Job;
+import util.DBConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class JobDAO {
+
+    public void addJob(Job job) {
+        String sql = "INSERT INTO Job (title, description, companyId) VALUES (?, ?, ?)";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, job.getTitle());
+            statement.setString(2, job.getDescription());
+            statement.setInt(3, job.getCompanyId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Job getJob(int jobId) {
+        String sql = "SELECT * FROM Job WHERE jobId = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, jobId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                int companyId = resultSet.getInt("companyId");
+                return new Job(title, description, companyId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Job> getAllJobs() {
+        List<Job> jobs = new ArrayList<>();
+        String sql = "SELECT * FROM Job";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int jobId = resultSet.getInt("jobId");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                int companyId = resultSet.getInt("companyId");
+                Job job = new Job(title, description, companyId);
+                job.setJobId(jobId);
+                jobs.add(job);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return jobs;
+    }
+
+    public void updateJob(Job job) {
+        String sql = "UPDATE Job SET title = ?, description = ?, companyId = ? WHERE jobId = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, job.getTitle());
+            statement.setString(2, job.getDescription());
+            statement.setInt(3, job.getCompanyId());
+            statement.setInt(4, job.getJobId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteJob(int jobId) {
+        String sql = "DELETE FROM Job WHERE jobId = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, jobId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
